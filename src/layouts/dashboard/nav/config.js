@@ -23,7 +23,12 @@ const navConfig = [
   },
   {
     title: 'Help',
-    path: '/dashboard/blog',
+    path: '/dashboard/help',
+    icon: icon('ic_blog'),
+  },
+  {
+    title: 'Add Crop',
+    path: '/dashboard/add-crop',
     icon: icon('ic_blog'),
   },
 ];
