@@ -1,20 +1,32 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const initialState = {
-    crops: [],
-    isErrors: false,
-    isSuccess: false,
-    isLoading: false,
-    message: ''
-}
+const API_URL = "/api/crops/";
 
-export const cropSlice = createSlice({
-    name: 'crop',
-    initialState,
-    reducers:{
-        reset: (state) => initialState
-    }
-})
+// Create new crop
+const createCrop = async (cropData, token) => {
+  const response = await axios.post(`${API_URL}`, cropData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const { reset } = cropSlice.actions
-export default cropSlice.reducer
+  return response.data;
+};
+
+// Get all crops
+const getCrops = async (token) => {
+  const response = await axios.get(`${API_URL}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+const cropService = {
+    createCrop,
+    getCrops
+};
+
+export default cropService;

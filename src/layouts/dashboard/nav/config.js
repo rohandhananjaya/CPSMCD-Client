@@ -29,7 +29,7 @@ const navConfig = [
   {
     title: 'Add Crop',
     path: '/dashboard/add-crop',
-    icon: icon('ic_blog'),
+    icon: icon('ic_crop'),
   },
 ];
 
