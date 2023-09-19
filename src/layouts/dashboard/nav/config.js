@@ -12,9 +12,9 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
-    title: 'My Crops',
-    path: '/dashboard/user',
-    icon: icon('ic_user'),
+    title: 'Crops',
+    path: '/dashboard/add-crop',
+    icon: icon('ic_crop'),
   },
   {
     title: 'Shop',
@@ -27,10 +27,11 @@ const navConfig = [
     icon: icon('ic_blog'),
   },
   {
-    title: 'Add Crop',
-    path: '/dashboard/add-crop',
-    icon: icon('ic_crop'),
+    title: 'My Crops',
+    path: '/dashboard/user',
+    icon: icon('ic_user'),
   },
+
 ];
 
 export default navConfig;
