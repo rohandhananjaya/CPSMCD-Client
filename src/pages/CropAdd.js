@@ -74,33 +74,6 @@ export default function CropAdd() {
                                 onChange={handleInputChange}
                             />
                         </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                fullWidth
-                                label="Year"
-                                name="year"
-                                value={cropData.year}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                fullWidth
-                                label="Month"
-                                name="month"
-                                value={cropData.month}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                fullWidth
-                                label="Quantity"
-                                name="quantity"
-                                value={cropData.quantity}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
                     </Grid>
                     {isLoading ? ( 
                         <CircularProgress />  // <-- Show progress circle when loading
