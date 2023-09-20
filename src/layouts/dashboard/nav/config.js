@@ -7,29 +7,34 @@ const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ 
 
 const navConfig = [
   {
-    title: 'dashboard',
+    title: 'Dashboard',
     path: '/dashboard/app',
     icon: icon('ic_analytics'),
+    user: ['Officer', 'Farmer'	,'Buyer','Seller'],
   },
   {
-    title: 'Crops',
+    title: 'Crops List',
     path: '/dashboard/add-crop',
     icon: icon('ic_crop'),
-  },
-  {
-    title: 'Shop',
-    path: '/dashboard/products',
-    icon: icon('ic_cart'),
-  },
-  {
-    title: 'Help',
-    path: '/dashboard/help',
-    icon: icon('ic_blog'),
+    user: ['Officer', 'Farmer' ,'Buyer'],
   },
   {
     title: 'My Crops',
     path: '/dashboard/user',
     icon: icon('ic_user'),
+    user: ['Farmer'	,'Buyer'],
+  },
+  {
+    title: 'Shop',
+    path: '/dashboard/products',
+    icon: icon('ic_cart'),
+    user: ['Officer', 'Farmer'	,'Buyer','Seller'],
+  },
+  {
+    title: 'Help',
+    path: '/dashboard/help',
+    icon: icon('ic_blog'),
+    user: ['Officer', 'Farmer'	,'Buyer','Seller'],
   },
 
 ];

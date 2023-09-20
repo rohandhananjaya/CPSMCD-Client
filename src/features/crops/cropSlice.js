@@ -1,4 +1,4 @@
-import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import cropService from "./cropService";
 
 const initialState = {
@@ -18,10 +18,10 @@ export const createCrop = createAsyncThunk(
             return await cropService.createCrop(cropData, token)
         } catch (error) {
             const message =
-            (error.response && error.response.data && error.response.data.message) ||
-            error.message ||
-            error.toString()
-          return thunkAPI.rejectWithValue(message)
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString()
+            return thunkAPI.rejectWithValue(message)
         }
     }
 )
@@ -35,10 +35,10 @@ export const getCrops = createAsyncThunk(
             return await cropService.getCrops(token)
         } catch (error) {
             const message =
-            (error.response && error.response.data && error.response.data.message) ||
-            error.message ||
-            error.toString()
-          return thunkAPI.rejectWithValue(message)
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString()
+            return thunkAPI.rejectWithValue(message)
         }
     }
 )
@@ -81,5 +81,5 @@ const cropSlice = createSlice({
     }
 })
 
-export const {reset} = cropSlice.actions
+export const { reset } = cropSlice.actions
 export default cropSlice.reducer

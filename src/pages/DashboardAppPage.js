@@ -28,6 +28,11 @@ export default function DashboardAppPage() {
   const navigate = useNavigate();
 
   const {user} = useSelector((state) => state.auth);
+  const {crops} = useSelector((state) => state.crops);
+
+  useEffect(() => {
+    console.log(crops);
+  }, [crops]);
 
   useEffect(() => {
     if (!user) {
