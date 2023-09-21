@@ -28,7 +28,7 @@ const navConfig = [
     title: 'Shop',
     path: '/dashboard/products',
     icon: icon('ic_cart'),
-    user: ['Officer', 'Farmer'	,'Buyer','Seller'],
+    user: ['Farmer','Seller'],
   },
   {
     title: 'Help',

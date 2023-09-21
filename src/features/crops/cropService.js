@@ -24,9 +24,21 @@ const getCrops = async (token) => {
   return response.data;
 };
 
+// Update crop
+const updateCrop = async (id, cropData, token) => {
+  const response = await axios.put(`${API_URL}${id}`, cropData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
 const cropService = {
     createCrop,
-    getCrops
+    getCrops,
+    updateCrop
 };
 
 export default cropService;

@@ -43,6 +43,24 @@ export const getCrops = createAsyncThunk(
     }
 )
 
+// Update crop
+export const updateCrop = createAsyncThunk(
+    "crop/updateCrop",
+    async (cropData, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token;
+            const id = '65088b0aef48dd4f1f04e84d';
+            return await cropService.updateCrop(id, cropData, token)
+        } catch (error) {
+            const message =
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString()
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
 const cropSlice = createSlice({
     name: "crop",
     initialState,
@@ -74,6 +92,20 @@ const cropSlice = createSlice({
                 state.crops = action.payload
             })
             .addCase(getCrops.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+
+            .addCase(updateCrop.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateCrop.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.crops = action.payload
+            })
+            .addCase(updateCrop.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
