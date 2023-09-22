@@ -46,10 +46,11 @@ export const getCrops = createAsyncThunk(
 // Update crop
 export const updateCrop = createAsyncThunk(
     "crop/updateCrop",
-    async (cropData, thunkAPI) => {
+    async (bindData, thunkAPI) => {
         try {
             const token = thunkAPI.getState().auth.user.token;
-            const id = '65088b0aef48dd4f1f04e84d';
+            const id = bindData.id;
+            const cropData = bindData.cropData;
             return await cropService.updateCrop(id, cropData, token)
         } catch (error) {
             const message =

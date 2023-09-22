@@ -49,11 +49,13 @@ export default function CropAdd() {
 
     const [menuData, setMenuData] = useState({
         crop_id: '',
-        year: new Date().getFullYear(),
-        month: '',
-        target: '',
-        minPrice: '',
-        maxPrice: ''
+        crop_name: '',
+        year: 0,
+        month: 0,
+        target: 0,
+        minPrice: 0,
+        maxPrice: 0,
+        statistics: []
     });
 
     const dispatch = useDispatch();
@@ -61,6 +63,8 @@ export default function CropAdd() {
     useEffect(() => {
         dispatch(getCrops());
     }, []);
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -97,24 +101,48 @@ export default function CropAdd() {
         setSelected(newSelected);
     };
 
-    const handleOpenMenu = (cropId) => {
+    const handleOpenMenu = (cropId,cropName) => {
         // use cropId here
 
         setMenuData((prevData) => ({
             ...prevData,
-            crop_id: cropId
+            crop_id: cropId,
+            crop_name: cropName
         }));
         setOpen(true);
     };
 
     const onDialogClick = () => {
+
+        let oldStatistics = [];
+
+        const foundCrop = crops.crops.find(crop => crop._id === menuData.crop_id);
+        if (foundCrop) {
+            oldStatistics = foundCrop.statistics.map(statistic => {
+                const { _id, ...statWithoutId } = statistic;
+                return statWithoutId;
+            });
+        }
+
         const cropData = {
-            name: "Test food 0040",
-            costOfSeed: 10,
-            timeToGrow: 190
+            statistics: [...oldStatistics, {
+                year: menuData.year,
+                month: months.indexOf(menuData.month)+1,
+                quantity: menuData.target,
+                min_price: menuData.minPrice,
+                max_price: menuData.maxPrice
+            }
+            ]
         };
-        dispatch(updateCrop(cropData))
-        dispatch(getCrops());
+
+        const bindData = {
+            id: menuData.crop_id,
+            cropData
+        };
+
+         dispatch(updateCrop(bindData))
+        // dispatch(getCrops());
+         window.location.reload();
     }
 
 
@@ -191,7 +219,7 @@ export default function CropAdd() {
                                         <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
                                     </TableCell>
                                     <TableCell align="right">
-                                        <IconButton size="large" color="inherit" onClick={() => handleOpenMenu(crop._id)}>
+                                        <IconButton size="large" color="inherit" onClick={() => handleOpenMenu(crop._id,crop.name)}>
                                             <Iconify icon={'eva:more-vertical-fill'} />
                                         </IconButton>
                                     </TableCell>
@@ -212,8 +240,9 @@ export default function CropAdd() {
                 />
             </Card>
             <Dialog open={open} onClose={() => setOpen(false)}>
-                <DialogTitle>Set Crop Analytic</DialogTitle>
+                <DialogTitle>Crop Analytics</DialogTitle>
                 <DialogContent>
+                <h4><i>Crop Name : {menuData.crop_name}</i></h4>
                     <TextField
                         fullWidth
                         label="Year"
