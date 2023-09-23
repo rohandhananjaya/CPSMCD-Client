@@ -6,12 +6,11 @@ import {
     Table, TableContainer, IconButton, TablePagination,
     Paper, Grid, TableHead, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem
 } from '@mui/material';
+import Chart from "react-apexcharts";
 import { sentenceCase } from 'change-case';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import { createCrop, getCrops, updateCrop } from '../features/crops/cropSlice';
-
-
 
 const initialCropData = {
     name: '',
@@ -31,21 +30,19 @@ const TABLE_HEAD = [
     { id: 'status', label: 'Status', alignRight: false },
 ];
 
-
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-
 
 export default function CropAdd() {
     const [cropData, setCropData] = useState(initialCropData);
     const [isLoading, setIsLoading] = useState(false);
     const crops = useSelector(state => state.crops);
     const user = useSelector((state) => state.auth);
-    const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [status, setStatus] = useState('success');
     const [open, setOpen] = useState(false);
+    const [chartData, setChartData] = useState([]);
+
 
     const [menuData, setMenuData] = useState({
         crop_id: '',
@@ -82,26 +79,7 @@ export default function CropAdd() {
             });
     };
 
-    const handleSelect = (name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-        setSelected(newSelected);
-    };
-
-    const handleOpenMenu = (cropId,cropName) => {
+    const handleOpenMenu = (cropId, cropName) => {
         // use cropId here
 
         setMenuData((prevData) => ({
@@ -109,6 +87,23 @@ export default function CropAdd() {
             crop_id: cropId,
             crop_name: cropName
         }));
+
+        const foundCrop = crops.crops.find(crop => crop._id === menuData.crop_id);
+        
+        
+        if (foundCrop) {
+            const chartData = foundCrop.statistics.map(statistic => {
+                const { year, month, quantity } = statistic;
+                return {
+                    x: `${year}/${month}`,
+                    y: quantity
+                };
+            });
+    
+            // Update the state with the chart data
+            setChartData(chartData);
+        }
+
         setOpen(true);
     };
 
@@ -127,7 +122,7 @@ export default function CropAdd() {
         const cropData = {
             statistics: [...oldStatistics, {
                 year: menuData.year,
-                month: months.indexOf(menuData.month)+1,
+                month: months.indexOf(menuData.month) + 1,
                 quantity: menuData.target,
                 min_price: menuData.minPrice,
                 max_price: menuData.maxPrice
@@ -140,9 +135,9 @@ export default function CropAdd() {
             cropData
         };
 
-         dispatch(updateCrop(bindData))
+        dispatch(updateCrop(bindData))
         // dispatch(getCrops());
-         window.location.reload();
+        window.location.reload();
     }
 
 
@@ -219,7 +214,7 @@ export default function CropAdd() {
                                         <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
                                     </TableCell>
                                     <TableCell align="right">
-                                        <IconButton size="large" color="inherit" onClick={() => handleOpenMenu(crop._id,crop.name)}>
+                                        <IconButton size="large" color="inherit" onClick={() => handleOpenMenu(crop._id, crop.name)}>
                                             <Iconify icon={'eva:more-vertical-fill'} />
                                         </IconButton>
                                     </TableCell>
@@ -242,7 +237,29 @@ export default function CropAdd() {
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogTitle>Crop Analytics</DialogTitle>
                 <DialogContent>
-                <h4><i>Crop Name : {menuData.crop_name}</i></h4>
+                    <h4><i>Crop Name : {menuData.crop_name}</i></h4>
+                    <Chart
+                        options={
+                            {
+                                chart: {
+                                    id: "basic-bar"
+                                },
+                                xaxis: {
+                                    categories: chartData.map(dataPoint => dataPoint.x)
+                                }
+                            }
+                        }
+                        series={
+                            [
+                                {
+                                    name: menuData.crop_name,
+                                    data: chartData.map(dataPoint => dataPoint.y)
+                                }
+                            ]
+                        }
+                        type="bar"
+                        width="500"
+                    />
                     <TextField
                         fullWidth
                         label="Year"
@@ -310,7 +327,6 @@ export default function CropAdd() {
                     </Button>
                 </DialogActions>
             </Dialog>
-
         </Container>
     );
 }
