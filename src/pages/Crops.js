@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     TextField, Button, Typography, Container, CircularProgress,
-    Card, Checkbox, Avatar, TableCell, TableRow, TableBody,
+    Card, TableCell, TableRow, TableBody,
     Table, TableContainer, IconButton, TablePagination,
     Paper, Grid, TableHead, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem
 } from '@mui/material';
@@ -36,19 +36,18 @@ export default function CropAdd() {
     const [cropData, setCropData] = useState(initialCropData);
     const [isLoading, setIsLoading] = useState(false);
     const crops = useSelector(state => state.crops);
-    const user = useSelector((state) => state.auth);
+    const user = useSelector(state => state.auth);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [status, setStatus] = useState('success');
     const [open, setOpen] = useState(false);
     const [chartData, setChartData] = useState([]);
 
-
     const [menuData, setMenuData] = useState({
         crop_id: '',
         crop_name: '',
-        year: 0,
-        month: 0,
+        year: new Date().getFullYear(),
+        month: months[0],
         target: 0,
         minPrice: 0,
         maxPrice: 0,
@@ -59,9 +58,7 @@ export default function CropAdd() {
 
     useEffect(() => {
         dispatch(getCrops());
-    }, []);
-
-
+    }, [dispatch]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -70,75 +67,95 @@ export default function CropAdd() {
 
     const handleAddCrop = async () => {
         setIsLoading(true);
-        await dispatch(createCrop(cropData))
-            .then(() => setCropData(initialCropData))
-            .catch(error => console.error('Error:', error))
-            .finally(() => {
-                setIsLoading(false);
-                dispatch(getCrops());
-            });
+        try {
+            await dispatch(createCrop(cropData));
+            setCropData(initialCropData);
+            dispatch(getCrops());
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleOpenMenu = (cropId, cropName) => {
-        // use cropId here
-
         setMenuData((prevData) => ({
             ...prevData,
             crop_id: cropId,
             crop_name: cropName
         }));
 
-        const foundCrop = crops.crops.find(crop => crop._id === menuData.crop_id);
-        
-        
+        const foundCrop = crops.crops.find(crop => crop._id === cropId);
+
         if (foundCrop) {
-            const chartData = foundCrop.statistics.map(statistic => {
-                const { year, month, quantity } = statistic;
-                return {
-                    x: `${year}/${month}`,
-                    y: quantity
-                };
-            });
-    
-            // Update the state with the chart data
-            setChartData(chartData);
+            const newChartData = foundCrop.statistics.map(statistic => ({
+                x: `${statistic.year}/${statistic.month}`,
+                y: statistic.quantity
+            }));
+
+            setChartData(newChartData);
         }
 
         setOpen(true);
     };
 
-    const onDialogClick = () => {
-
-        let oldStatistics = [];
-
+    const onDialogClick = async () => {
         const foundCrop = crops.crops.find(crop => crop._id === menuData.crop_id);
-        if (foundCrop) {
-            oldStatistics = foundCrop.statistics.map(statistic => {
-                const { _id, ...statWithoutId } = statistic;
-                return statWithoutId;
-            });
-        }
 
-        const cropData = {
-            statistics: [...oldStatistics, {
+        if (foundCrop) {
+            const updatedStatistics = [...foundCrop.statistics, {
                 year: menuData.year,
                 month: months.indexOf(menuData.month) + 1,
                 quantity: menuData.target,
                 min_price: menuData.minPrice,
-                max_price: menuData.maxPrice
+                max_price: menuData.maxPrice,
+                cropstatus: "Progress",
+            }];
+
+            const bindData = {
+                id: menuData.crop_id,
+                cropData: { statistics: updatedStatistics }
+            };
+
+            try {
+                await dispatch(updateCrop(bindData));
+                // Dispatching getCrops here might be unnecessary as it's already updated when adding a crop.
+                // dispatch(getCrops());
+                window.location.reload();
+            } catch (error) {
+                console.error('Error:', error);
             }
-            ]
-        };
+        }
 
-        const bindData = {
-            id: menuData.crop_id,
-            cropData
-        };
+        setOpen(false);
+    };
 
-        dispatch(updateCrop(bindData))
-        // dispatch(getCrops());
-        window.location.reload();
-    }
+    // Helper function to get the color based on crop status
+    const getColorBasedOnStatus = (crpstate) => {
+        if (crpstate.length === 0) {
+            return 'info'; // Define your default color here
+        }
+
+        const cropStatus = crpstate[crpstate.length - 1].cropstatus;
+
+        switch (cropStatus) {
+            case 'Progress':
+                return 'success'; // Define the green color
+            case 'Complete':
+                return 'warning'; // Define the yellow color
+            default:
+                return 'info'; // Define your default color here
+        }
+    };
+
+    // Helper function to get the status label
+    const getStatusLabel = (crpstate) => {
+        if (crpstate.length > 0) {
+            return (crpstate[crpstate.length - 1].cropstatus);
+        }
+
+        return 'N/A';
+    };
 
 
     return (
@@ -186,7 +203,8 @@ export default function CropAdd() {
                             </Button>
                         )}
                     </form>
-                </Paper>)}
+                </Paper>
+            )}
             <Card sx={{ padding: 3, mt: 2 }}>
                 <Typography variant="h6" gutterBottom>
                     List of Crops
@@ -208,10 +226,15 @@ export default function CropAdd() {
                                     <TableCell>{crop.name}</TableCell>
                                     <TableCell>{crop.costOfSeed}</TableCell>
                                     <TableCell>{crop.timeToGrow}</TableCell>
-                                    <TableCell>4000Kg</TableCell>
-                                    <TableCell>2023 - December</TableCell>
+                                    <TableCell>{crop.statistics.length > 0 ? `${crop.statistics[crop.statistics.length - 1].quantity} Kg` : 'N/A'}</TableCell>
                                     <TableCell>
-                                        <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                                        {crop.statistics.length > 0
+                                            ? `${crop.statistics[crop.statistics.length - 1].year} - ${months[crop.statistics[crop.statistics.length - 1].month - 1]}`
+                                            : 'N/A'}
+                                    </TableCell>
+
+                                    <TableCell>
+                                        <Label color={getColorBasedOnStatus(crop.statistics)}>{getStatusLabel(crop.statistics)}</Label>
                                     </TableCell>
                                     <TableCell align="right">
                                         <IconButton size="large" color="inherit" onClick={() => handleOpenMenu(crop._id, crop.name)}>
@@ -239,24 +262,20 @@ export default function CropAdd() {
                 <DialogContent>
                     <h4><i>Crop Name : {menuData.crop_name}</i></h4>
                     <Chart
-                        options={
-                            {
-                                chart: {
-                                    id: "basic-bar"
-                                },
-                                xaxis: {
-                                    categories: chartData.map(dataPoint => dataPoint.x)
-                                }
+                        options={{
+                            chart: {
+                                id: "basic-bar"
+                            },
+                            xaxis: {
+                                categories: chartData.map(dataPoint => dataPoint.x)
                             }
-                        }
-                        series={
-                            [
-                                {
-                                    name: menuData.crop_name,
-                                    data: chartData.map(dataPoint => dataPoint.y)
-                                }
-                            ]
-                        }
+                        }}
+                        series={[
+                            {
+                                name: menuData.crop_name,
+                                data: chartData.map(dataPoint => dataPoint.y)
+                            }
+                        ]}
                         type="bar"
                         width="500"
                     />
@@ -268,13 +287,11 @@ export default function CropAdd() {
                         onChange={e => setMenuData({ ...menuData, year: e.target.value })}
                         sx={{ mb: 2, mt: 2 }}
                     >
-
                         {[...Array(10)].map((_, i) => (
                             <MenuItem key={i} value={new Date().getFullYear() + i}>
                                 {new Date().getFullYear() + i}
                             </MenuItem>
                         ))}
-
                     </TextField>
                     <TextField
                         fullWidth
@@ -330,5 +347,3 @@ export default function CropAdd() {
         </Container>
     );
 }
-
-
