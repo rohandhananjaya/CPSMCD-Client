@@ -24,8 +24,19 @@ const updateUser = async (id, data, token) => {
     return response.data;
 }
 
+// Get user by id
+const getUserById = async (id,token) => {
+    const response = await axios.get(`${API_URL}${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+}
+
 const userService = {
     getUsers,
+    getUserById,
     updateUser
 };
 

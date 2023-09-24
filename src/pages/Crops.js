@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import Chart from "react-apexcharts";
 import { sentenceCase } from 'change-case';
-import { updateUser } from '../features/users/usersSlice';
+import { updateUser, getUsers } from '../features/users/usersSlice';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import { createCrop, getCrops, updateCrop } from '../features/crops/cropSlice';
@@ -73,6 +73,10 @@ export default function CropAdd() {
 
     useEffect(() => {
         dispatch(getCrops());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(getUsers());
     }, [dispatch]);
 
     useEffect(() => {
@@ -174,8 +178,14 @@ export default function CropAdd() {
             bid_price: 0
         }));
 
-        const cultivation = [];
-        cultivation.push(farmerMenuData);
+        const oldCultivation = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
+
+        let cultivation = [];
+       // cultivation.push(oldCultivation);
+       // cultivation.push(farmerMenuData);
+        cultivation = [...oldCultivation, farmerMenuData];
+
+        console.log(cultivation);
 
         const bindData = {
             id: user.user._id,

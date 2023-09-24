@@ -26,6 +26,23 @@ export const getUsers = createAsyncThunk(
     }
 )
 
+// Get user by id
+export const getUserById = createAsyncThunk(
+    "user/getUserById",
+    async (id, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token;
+            return await userService.getUserById(id, token);
+        } catch (error) {
+            const message =
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString()
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
 // Update user
 export const updateUser = createAsyncThunk(
     "user/updateUser",
