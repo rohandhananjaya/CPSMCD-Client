@@ -1,13 +1,14 @@
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
-import { useEffect } from 'react';
+import { useEffect, useState  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+	
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Select, Switch } from '@mui/material';
 // components
-import Iconify from '../components/iconify';
+
 // sections
 import {
   AppTasks,
@@ -20,19 +21,31 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
-
+import { getCrops} from '../features/crops/cropSlice';
+import { getUsers } from '../features/users/usersSlice';
+import Iconify from '../components/iconify';
+import {cardIconStyle, cardTitle} from '../pages/carddataHelper';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const {user} = useSelector((state) => state.auth);
-  const {crops} = useSelector((state) => state.crops);
+  const user = useSelector((state) => state.auth);
+  const crops = useSelector((state) => state.crops);
+  const users = useSelector((state) => state.users);
 
-  useEffect(() => {
-    console.log(crops);
-  }, [crops]);
+
+  const dispatch = useDispatch();
+
+useEffect(() => {
+    dispatch(getUsers());
+}, [dispatch]);
+
+useEffect(() => {
+    dispatch(getCrops());
+}, [dispatch]);
+
 
   useEffect(() => {
     if (!user) {
@@ -40,6 +53,51 @@ export default function DashboardAppPage() {
     }
   }, [user, navigate]);
 
+  const changeTitle1 = () => {
+    switch (user.user.type) {
+      case 'Farmer':
+        return 'Total Crops';
+      case 'Buyer':
+        return 'Total Orders';
+      case 'Officer':
+        return 'Total Farmers';
+      case 'Seller':
+        return 'Total Users';
+      default:
+          return 'N/A';
+    }
+  }
+
+  const changeTitle2 = () => {
+    switch (user.user.type) {
+      case 'Farmer':
+        return 'My Crops';
+      case 'Buyer':
+        return 'Total Orders';
+      case 'Officer':
+        return 'Total Crops';
+      case 'Seller':
+        return 'Total Users';
+      default:
+          return 'N/A';
+    }
+  }
+
+  const total1 = () => {
+    let count = 0;
+    if(user.user.type=== 'Officer'){
+      count = users.users.filter(user => user.type === 'Farmer').length;
+    }
+    return count;
+  }
+
+  const total2 = () => {
+    let count = 0;
+    if(user.user.type=== 'Officer'){
+      count = crops.crops.length;
+    }
+    return count;
+  }
 
   return (
     <>
@@ -54,19 +112,19 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary title={cardTitle(1,user.user.type)} total={total1()} icon={cardIconStyle(1,user.user.type)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title={cardTitle(2,user.user.type)} total={total2()} color="info" icon={cardIconStyle(2,user.user.type)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title={cardTitle(3,user.user.type)} total={1723315} color="warning" icon={cardIconStyle(3,user.user.type)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title={cardTitle(4,user.user.type)} total={234} color="error" icon={cardIconStyle(4,user.user.type)} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
