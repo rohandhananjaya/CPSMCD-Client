@@ -23,8 +23,8 @@ const initialCropData = {
 
 const TABLE_HEAD = [
     { id: 'name', label: 'Crop Name', alignRight: false },
-    { id: 'costOfSeed', label: 'Cost (1g)', alignRight: false },
-    { id: 'timeToGrow', label: 'Time to Grow (Days)', alignRight: false },
+    { id: 'costOfSeed', label: 'Cost of seed(1g)', alignRight: true },
+    { id: 'timeToGrow', label: 'Time to Grow (Days)', alignRight: true },
     { id: 'nextTarget', label: 'Next Target', alignRight: false },
     { id: 'month', label: 'Target Month', alignRight: false },
     { id: 'status', label: 'Status', alignRight: false },
@@ -39,9 +39,13 @@ export default function CropAdd() {
     const user = useSelector(state => state.auth);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [status, setStatus] = useState('success');
-    const [open, setOpen] = useState(false);
+    const [officerDialogOpen, setOfficerDialogOpen] = useState(false);
+    const [farmerDialogOpen, setFarmerDialogOpen] = useState(false);
+    const [farmerTarget, setFarmerTarget] = useState(0);
     const [chartData, setChartData] = useState([]);
+
+    const [selStatic, setselStatic] = useState([]);
+
 
     const [menuData, setMenuData] = useState({
         crop_id: '',
@@ -78,6 +82,7 @@ export default function CropAdd() {
         }
     };
 
+
     const handleOpenMenu = (cropId, cropName) => {
         setMenuData((prevData) => ({
             ...prevData,
@@ -86,17 +91,28 @@ export default function CropAdd() {
         }));
 
         const foundCrop = crops.crops.find(crop => crop._id === cropId);
+        setselStatic(foundCrop.statistics);
 
-        if (foundCrop) {
+        if (user.user.type === "Officer") {
+            if (foundCrop) {
+                const newChartData = foundCrop.statistics.map(statistic => ({
+                    x: `${statistic.year}/${statistic.month}`,
+                    y: statistic.quantity
+                }));
+
+                setChartData(newChartData);
+            }
+
+            setOfficerDialogOpen(true);
+        } else if (user.user.type === "Farmer" && foundCrop) {
             const newChartData = foundCrop.statistics.map(statistic => ({
                 x: `${statistic.year}/${statistic.month}`,
                 y: statistic.quantity
             }));
 
             setChartData(newChartData);
+            setFarmerDialogOpen(true);
         }
-
-        setOpen(true);
     };
 
     const onDialogClick = async () => {
@@ -119,32 +135,34 @@ export default function CropAdd() {
 
             try {
                 await dispatch(updateCrop(bindData));
-                // Dispatching getCrops here might be unnecessary as it's already updated when adding a crop.
-                // dispatch(getCrops());
                 window.location.reload();
             } catch (error) {
                 console.error('Error:', error);
             }
         }
 
-        setOpen(false);
+        setOfficerDialogOpen(false);
     };
+
+    const onfarmerDialogClick = async () => {
+        
+    }
 
     // Helper function to get the color based on crop status
     const getColorBasedOnStatus = (crpstate) => {
         if (crpstate.length === 0) {
-            return 'info'; // Define your default color here
+            return 'info';
         }
 
         const cropStatus = crpstate[crpstate.length - 1].cropstatus;
 
         switch (cropStatus) {
             case 'Progress':
-                return 'success'; // Define the green color
+                return 'success';
             case 'Complete':
-                return 'warning'; // Define the yellow color
+                return 'warning';
             default:
-                return 'info'; // Define your default color here
+                return 'info';
         }
     };
 
@@ -157,6 +175,32 @@ export default function CropAdd() {
         return 'N/A';
     };
 
+
+
+    const handleFarmerTargetChange = (e) => {
+        const targetValue = parseInt(e.target.value, 10);
+        const foundCrop = crops.crops.find(crop => crop._id === menuData.crop_id);
+        if (foundCrop.statistics.length > 0) {
+            if (targetValue <= foundCrop.statistics[foundCrop.statistics.length - 1].quantity) {
+                setFarmerTarget(targetValue);
+            } else if (e.target.value === '') {
+                setFarmerTarget(e.target.value);
+            }
+        } else {
+            setFarmerTarget(0);
+        }
+    };
+
+    const handleNextStatsValue = () => {
+        const foundCrop = crops.crops.find(crop => crop._id === menuData.crop_id);
+        if (foundCrop) {
+            if (foundCrop.statistics.length > 0) {
+                const cropQuantity = foundCrop.statistics[foundCrop.statistics.length - 1].quantity;
+                return cropQuantity;
+            }
+        }
+        return 'N/A';// crops.crops.find(crop => crop._id === menuData.crop_id).statistics[crops.crops.find(crop => crop._id === menuData.crop_id).statistics.length - 1].quantity;
+    }
 
     return (
         <Container maxWidth="lg">
@@ -257,7 +301,7 @@ export default function CropAdd() {
                     onRowsPerPageChange={(event) => setRowsPerPage(parseInt(event.target.value, 10))}
                 />
             </Card>
-            <Dialog open={open} onClose={() => setOpen(false)}>
+            <Dialog open={officerDialogOpen} onClose={() => setOfficerDialogOpen(false)}>
                 <DialogTitle>Crop Analytics</DialogTitle>
                 <DialogContent>
                     <h4><i>Crop Name : {menuData.crop_name}</i></h4>
@@ -330,13 +374,65 @@ export default function CropAdd() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)} color="primary">
+                    <Button onClick={() => setOfficerDialogOpen(false)} color="primary">
                         Cancel
                     </Button>
                     <Button
                         onClick={() => {
-                            setOpen(false);
+                            setOfficerDialogOpen(false);
                             onDialogClick();
+                        }}
+                        color="primary"
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={farmerDialogOpen} onClose={() => setFarmerDialogOpen(false)}>
+                <DialogTitle>Crop Analytics</DialogTitle>
+                <DialogContent>
+                    <h4><i>Crop Name : {menuData.crop_name}</i></h4>
+                    <Chart
+                        options={{
+                            chart: {
+                                id: "basic-bar"
+                            },
+                            xaxis: {
+                                categories: chartData.map(dataPoint => dataPoint.x)
+                            }
+                        }}
+                        series={[
+                            {
+                                name: menuData.crop_name,
+                                data: chartData.map(dataPoint => dataPoint.y)
+                            }
+                        ]}
+                        type="bar"
+                        width="500"
+                    />
+                    <Typography variant="h5">
+                        Next Estimation (in KG): {handleNextStatsValue()}
+                    </Typography>
+                    <Typography variant='h6'>
+                        Status: <Label color={getColorBasedOnStatus(selStatic)}>{getStatusLabel(selStatic)}</Label>
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        label="My Target (in KG)"
+                        value={farmerTarget}
+                        onChange={handleFarmerTargetChange}
+                        disabled={selStatic.length === 0 || (getStatusLabel(selStatic) === 'Complete')}
+                        sx={{ mb: 2, mt: 3 }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setFarmerDialogOpen(false)} color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            setFarmerDialogOpen(false);
+                            onfarmerDialogClick();
                         }}
                         color="primary"
                     >

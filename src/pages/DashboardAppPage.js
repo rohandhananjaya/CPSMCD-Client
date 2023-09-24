@@ -24,7 +24,7 @@ import {
 import { getCrops} from '../features/crops/cropSlice';
 import { getUsers } from '../features/users/usersSlice';
 import Iconify from '../components/iconify';
-import {cardIconStyle, cardTitle} from '../pages/carddataHelper';
+import {cardIconStyle, cardTitle} from '../helpers/carddataHelper';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
@@ -53,35 +53,6 @@ useEffect(() => {
     }
   }, [user, navigate]);
 
-  const changeTitle1 = () => {
-    switch (user.user.type) {
-      case 'Farmer':
-        return 'Total Crops';
-      case 'Buyer':
-        return 'Total Orders';
-      case 'Officer':
-        return 'Total Farmers';
-      case 'Seller':
-        return 'Total Users';
-      default:
-          return 'N/A';
-    }
-  }
-
-  const changeTitle2 = () => {
-    switch (user.user.type) {
-      case 'Farmer':
-        return 'My Crops';
-      case 'Buyer':
-        return 'Total Orders';
-      case 'Officer':
-        return 'Total Crops';
-      case 'Seller':
-        return 'Total Users';
-      default:
-          return 'N/A';
-    }
-  }
 
   const total1 = () => {
     let count = 0;
