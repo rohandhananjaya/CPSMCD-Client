@@ -11,6 +11,7 @@ import { sentenceCase } from 'change-case';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import { createCrop, getCrops, updateCrop } from '../features/crops/cropSlice';
+// import { set } from 'lodash';
 
 const initialCropData = {
     name: '',
@@ -43,7 +44,6 @@ export default function CropAdd() {
     const [farmerDialogOpen, setFarmerDialogOpen] = useState(false);
     const [farmerTarget, setFarmerTarget] = useState(0);
     const [chartData, setChartData] = useState([]);
-
     const [selStatic, setselStatic] = useState([]);
 
 
@@ -56,13 +56,30 @@ export default function CropAdd() {
         minPrice: 0,
         maxPrice: 0,
         statistics: []
-    });
+    })
+
+    const [farmerMenuData, setFarmerMenuData] = useState({
+        name: '',
+        quantity: 0,
+        cost: 0,
+        status: '',
+        harvest_date: '',
+        bid_price: 0
+    })
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getCrops());
     }, [dispatch]);
+
+    useEffect(() => {
+        setFarmerMenuData((prevData) => ({
+            ...prevData,
+            quantity: farmerTarget
+        })
+        );
+    }, [farmerTarget]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -109,7 +126,7 @@ export default function CropAdd() {
                 x: `${statistic.year}/${statistic.month}`,
                 y: statistic.quantity
             }));
-
+            setFarmerTarget(0);
             setChartData(newChartData);
             setFarmerDialogOpen(true);
         }
@@ -145,7 +162,15 @@ export default function CropAdd() {
     };
 
     const onfarmerDialogClick = async () => {
-        
+        setFarmerMenuData((prevData) => ({
+            ...prevData,
+            name: menuData.crop_name,
+            cost: 0,
+            status: 'Pre-Stage',
+            harvest_date: '',
+            bid_price: 0
+        }));
+        console.log(farmerMenuData);
     }
 
     // Helper function to get the color based on crop status
@@ -171,22 +196,17 @@ export default function CropAdd() {
         if (crpstate.length > 0) {
             return (crpstate[crpstate.length - 1].cropstatus);
         }
-
         return 'N/A';
     };
 
 
 
     const handleFarmerTargetChange = (e) => {
-        const targetValue = parseInt(e.target.value, 10);
-        const foundCrop = crops.crops.find(crop => crop._id === menuData.crop_id);
-        if (foundCrop.statistics.length > 0) {
-            if (targetValue <= foundCrop.statistics[foundCrop.statistics.length - 1].quantity) {
-                setFarmerTarget(targetValue);
-            } else if (e.target.value === '') {
-                setFarmerTarget(e.target.value);
-            }
-        } else {
+        const newValue = parseInt(e.target.value, 10);
+
+        if (newValue < handleNextStatsValue()) {
+            setFarmerTarget(newValue);
+        }else if(e.target.value===''){
             setFarmerTarget(0);
         }
     };
@@ -199,7 +219,7 @@ export default function CropAdd() {
                 return cropQuantity;
             }
         }
-        return 'N/A';// crops.crops.find(crop => crop._id === menuData.crop_id).statistics[crops.crops.find(crop => crop._id === menuData.crop_id).statistics.length - 1].quantity;
+        return 'N/A';
     }
 
     return (

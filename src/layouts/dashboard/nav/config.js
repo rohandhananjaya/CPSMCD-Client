@@ -14,7 +14,7 @@ const navConfig = [
   },
   {
     title: 'Crops List',
-    path: '/dashboard/add-crop',
+    path: '/dashboard/crop-manager',
     icon: icon('ic_crop'),
     user: ['Officer', 'Farmer' ,'Buyer'],
   },

@@ -26,6 +26,25 @@ export const getUsers = createAsyncThunk(
     }
 )
 
+// Update user
+export const updateUser = createAsyncThunk(
+    "user/updateUser",
+    async (bindData, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token;
+            const id = bindData.id;
+            const data = bindData.data;
+            return await userService.updateUser(id, data, token);
+        } catch (error) {
+            const message =
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString()
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
 const userSlice = createSlice({
     name: "user",
     initialState,

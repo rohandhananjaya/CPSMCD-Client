@@ -24,7 +24,7 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'help', element: <BlogPage /> },
-        { path: 'add-crop', element: <CropAdd /> }
+        { path: 'crop-manager', element: <CropAdd /> }
       ],
     },
     {
