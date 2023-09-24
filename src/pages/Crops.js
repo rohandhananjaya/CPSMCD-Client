@@ -8,10 +8,11 @@ import {
 } from '@mui/material';
 import Chart from "react-apexcharts";
 import { sentenceCase } from 'change-case';
+import { updateUser } from '../features/users/usersSlice';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import { createCrop, getCrops, updateCrop } from '../features/crops/cropSlice';
-// import { set } from 'lodash';
+
 
 const initialCropData = {
     name: '',
@@ -45,6 +46,7 @@ export default function CropAdd() {
     const [farmerTarget, setFarmerTarget] = useState(0);
     const [chartData, setChartData] = useState([]);
     const [selStatic, setselStatic] = useState([]);
+    const users = useSelector((state) => state.users);
 
 
     const [menuData, setMenuData] = useState({
@@ -62,8 +64,8 @@ export default function CropAdd() {
         name: '',
         quantity: 0,
         cost: 0,
-        status: '',
-        harvest_date: '',
+        status: 'Progress',
+        target_date: '',
         bid_price: 0
     })
 
@@ -76,6 +78,7 @@ export default function CropAdd() {
     useEffect(() => {
         setFarmerMenuData((prevData) => ({
             ...prevData,
+            name: menuData.crop_name,
             quantity: farmerTarget
         })
         );
@@ -167,10 +170,19 @@ export default function CropAdd() {
             name: menuData.crop_name,
             cost: 0,
             status: 'Pre-Stage',
-            harvest_date: '',
+            target_date: '',
             bid_price: 0
         }));
-        console.log(farmerMenuData);
+
+        const cultivation = [];
+        cultivation.push(farmerMenuData);
+
+        const bindData = {
+            id: user.user._id,
+            data: { cultivation }
+        };
+
+        dispatch(updateUser(bindData));
     }
 
     // Helper function to get the color based on crop status
@@ -206,7 +218,7 @@ export default function CropAdd() {
 
         if (newValue < handleNextStatsValue()) {
             setFarmerTarget(newValue);
-        }else if(e.target.value===''){
+        } else if (e.target.value === '') {
             setFarmerTarget(0);
         }
     };
@@ -455,6 +467,7 @@ export default function CropAdd() {
                             onfarmerDialogClick();
                         }}
                         color="primary"
+                        disabled={selStatic.length === 0 || (getStatusLabel(selStatic) === 'Complete')}
                     >
                         Confirm
                     </Button>

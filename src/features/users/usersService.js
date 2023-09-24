@@ -20,7 +20,7 @@ const updateUser = async (id, data, token) => {
             Authorization: `Bearer ${token}`,
         },
     });
-
+    
     return response.data;
 }
 
