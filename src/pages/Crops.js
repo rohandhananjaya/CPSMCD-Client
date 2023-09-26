@@ -4,7 +4,7 @@ import {
     TextField, Button, Typography, Container, CircularProgress,
     Card, TableCell, TableRow, TableBody,
     Table, TableContainer, IconButton, TablePagination,
-    Paper, Grid, TableHead, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem
+    Paper, Grid, TableHead, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, Stack
 } from '@mui/material';
 import Chart from "react-apexcharts";
 import { sentenceCase } from 'change-case';
@@ -181,11 +181,7 @@ export default function CropAdd() {
         const oldCultivation = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
 
         let cultivation = [];
-       // cultivation.push(oldCultivation);
-       // cultivation.push(farmerMenuData);
         cultivation = [...oldCultivation, farmerMenuData];
-
-        console.log(cultivation);
 
         const bindData = {
             id: user.user._id,
@@ -246,6 +242,11 @@ export default function CropAdd() {
 
     return (
         <Container maxWidth="lg">
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+          Crop Manager
+          </Typography>
+        </Stack>
             {user.user.type === "Officer" && (
                 <Paper elevation={3} sx={{ padding: 3 }}>
                     <Typography variant="h5" gutterBottom>

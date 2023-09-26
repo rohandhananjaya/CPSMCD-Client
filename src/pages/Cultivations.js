@@ -1,7 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState, useEffect, } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 // @mui
 import {
   Card,
@@ -22,6 +23,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+import { getUsers } from '../features/users/usersSlice';
+
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -30,6 +33,7 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+
 
 // ----------------------------------------------------------------------
 
@@ -73,20 +77,26 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
+export default function CultivationsPage() {
   const [open, setOpen] = useState(null);
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const users = useSelector((state) => state.users);
+  const user = useSelector((state) => state.auth.user);
+  const [crops, setCrops] = useState([]);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUsers());
+    console.log(users.users.filter(thisUser => thisUser._id === user._id)[0].cultivation);
+
+  }, [dispatch]);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -146,6 +156,11 @@ export default function UserPage() {
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const getCultivations = () => {
+   // const oldCultivation = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
+   // setCrops(cultivations);
+  };
+
   return (
     <>
       <Helmet>
@@ -155,11 +170,8 @@ export default function UserPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            My Cultivations
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
-          </Button>
         </Stack>
 
         <Card>

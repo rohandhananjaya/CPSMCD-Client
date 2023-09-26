@@ -13,14 +13,14 @@ const navConfig = [
     user: ['Officer', 'Farmer'	,'Buyer','Seller'],
   },
   {
-    title: 'Crops List',
+    title: 'Crop Manager',
     path: '/dashboard/crop-manager',
     icon: icon('ic_crop'),
     user: ['Officer', 'Farmer' ,'Buyer'],
   },
   {
-    title: 'My Crops',
-    path: '/dashboard/user',
+    title: 'My Cultivations',
+    path: '/dashboard/cultivations',
     icon: icon('ic_user'),
     user: ['Farmer'	,'Buyer'],
   },
