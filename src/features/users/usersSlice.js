@@ -51,7 +51,6 @@ export const updateUser = createAsyncThunk(
             const token = thunkAPI.getState().auth.user.token;
             const id = bindData.id;
             const data = bindData.data;
-            console.log(data);
             return await userService.updateUser(id, data, token);
         } catch (error) {
             const message =
@@ -80,6 +79,20 @@ const userSlice = createSlice({
                 state.users = (action.payload)
             })
             .addCase(getUsers.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+
+            .addCase(updateUser.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.users = (action.payload)
+            })
+            .addCase(updateUser.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

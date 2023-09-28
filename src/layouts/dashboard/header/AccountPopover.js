@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
@@ -8,7 +8,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout, reset } from '../../../features/auth/authSlice';
 // mocks_
 import account from '../../../_mock/account';
-
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +32,9 @@ export default function AccountPopover() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const [userName,setUserName] = useState('--');
+  const [userEmail,setUserEmail] = useState('--');
+
 
   const [open, setOpen] = useState(null);
 
@@ -49,6 +51,13 @@ export default function AccountPopover() {
     dispatch(reset());
     navigate('/login');
   }
+
+  useEffect(()=>{
+    if(user){
+      setUserName(user.name);
+      setUserEmail(user.email);
+    }
+  },[dispatch]);
 
   return (
     <>
@@ -93,10 +102,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {user.name}
+            {userName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user.email}
+            {userEmail}
           </Typography>
         </Box>
 

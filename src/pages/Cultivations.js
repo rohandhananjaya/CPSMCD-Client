@@ -25,6 +25,7 @@ import { getUsers } from '../features/users/usersSlice';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
+import { getCrops } from '../features/crops/cropSlice';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Crop Name', alignRight: false },
@@ -48,9 +49,19 @@ export default function CultivationsPage() {
 
   useEffect(() => {
     dispatch(getUsers());
-    const userCultivation = users.users.filter(thisUser => thisUser._id === user._id)[0].cultivation;
-    setCrops(userCultivation);
+    dispatch(getCrops());
   }, [dispatch]);
+
+
+  useEffect(() => {
+    console.log('Cult Updating');
+    console.log(users.users);
+    console.log('----------');
+    if (users.users.length > 0) {
+      const userCultivation = users.users.filter(thisUser => thisUser._id === user._id)[0].cultivation;
+      setCrops(userCultivation);
+    }
+  }, [users, crops]);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);

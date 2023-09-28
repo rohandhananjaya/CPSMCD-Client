@@ -44,46 +44,53 @@ export default function DashboardAppPage() {
 
   useEffect(() => {
     dispatch(getUsers());
-    dispatch(getCrops());
-
-    if (user.user.type === 'Officer') {
-      setCardStat1(users.users.filter(user => user.type === 'Farmer').length);
-    }
-    if (user.user.type === 'Farmer') {
-      setCardStat1(crops.crops.length);
-    }
-
-    if (user.user.type === 'Officer') {
-      setcardStat2(crops.crops.length);
-    }
-    if (user.user.type === 'Farmer') {
-      setcardStat2(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation.length);
-    }
-
-    if (user.user.type === 'Officer') {
-      setcardStat3(0);
-    }
-    if (user.user.type === 'Farmer') {
-      // check cultivation is length > 0 !!!
-      const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
-      if(cultivations.length > 0){
-        setcardStat3(cultivations.filter(c => c.status === 'Ready').length);
-      }
-    }
-
-    if (user.user.type === 'Officer') {
-      setcardStat4(0);
-    }
-    if (user.user.type === 'Farmer') {
-      // check cultivation is length > 0 !!!
-      const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
-      if(cultivations.length > 0){
-        setcardStat4(cultivations.filter(c => c.status === 'Progress').length);
-      }
-    }
-
-
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getCrops());
+  }, [dispatch]);
+
+  useEffect(() => {
+
+    //  console.log(crops.crops)
+
+    if (users.users.length > 0) {
+      if (user.user.type === 'Officer') {
+        setCardStat1(users.users.filter(user => user.type === 'Farmer').length);
+      }
+      if (user.user.type === 'Farmer') {
+        setCardStat1(crops.crops.length);
+      }
+
+      if (user.user.type === 'Officer') {
+        setcardStat2(crops.crops.length);
+      }
+      if (user.user.type === 'Farmer') {
+        setcardStat2(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation.length);
+      }
+
+      if (user.user.type === 'Officer') {
+        setcardStat3(0);
+      }
+      if (user.user.type === 'Farmer') {
+        const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
+        if (cultivations.length > 0) {
+          setcardStat3(cultivations.filter(c => c.status === 'Ready').length);
+        }
+      }
+
+      if (user.user.type === 'Officer') {
+        setcardStat4(0);
+      }
+      if (user.user.type === 'Farmer') {
+        const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
+        if (cultivations.length > 0) {
+          setcardStat4(cultivations.filter(c => c.status === 'Progress').length);
+        }
+      }
+    }
+
+  }, [users, crops]);
 
 
 
