@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import { Box, List, ListItemText } from '@mui/material';
 //
@@ -16,15 +16,20 @@ NavSection.propTypes = {
 
 export default function NavSection({ data = [], ...other }) {
   const user = useSelector((state) => state.auth);
+  const [userType, setUserType] = useState('--');
+  const navigate = useNavigate();
   useEffect(() => {
-    // console.log(user);
-    // console.log(data);
+    if(user.user === null){
+      navigate('/login',{replace:true});
+    }else{
+      setUserType(user.user.type)
+    }
   }, [user]);
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
         {data.map((item) => (
-          <NavItem key={item.title} item={item} user={user.user.type} />
+          <NavItem key={item.title} item={item} user={userType} />
         ))}
       </List>
     </Box>

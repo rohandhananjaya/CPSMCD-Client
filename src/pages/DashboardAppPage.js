@@ -39,8 +39,22 @@ export default function DashboardAppPage() {
   const [cardStat2, setcardStat2] = useState(0);
   const [cardStat3, setcardStat3] = useState(0);
   const [cardStat4, setcardStat4] = useState(0);
+  const [cropAnlytics, setCropAnalytics] = useState([]);
+  const [chartDates, setChartDates] = useState([]);
+  const [chartData, setChartData] = useState([]);
+  const [userType, setUserType] = useState('');
+
+  const targetCrops = ['64fe09929213ed8c3ff22ae3', '65088ae1ef48dd4f1f04e848', '65088b92ef48dd4f1f04e852'];
+
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (user.user === null) {
+      navigate('/login', { replace: true });
+    } else {
+      setUserType(user.user.type)
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     dispatch(getUsers());
@@ -50,11 +64,13 @@ export default function DashboardAppPage() {
     dispatch(getCrops());
   }, [dispatch]);
 
+
+
   useEffect(() => {
 
     //  console.log(crops.crops)
 
-    if (users.users.length > 0) {
+    if (users.users.length > 0 && crops.crops.length > 0) {
       if (user.user.type === 'Officer') {
         setCardStat1(users.users.filter(user => user.type === 'Farmer').length);
       }
@@ -88,17 +104,26 @@ export default function DashboardAppPage() {
           setcardStat4(cultivations.filter(c => c.status === 'Progress').length);
         }
       }
+
+      setCropAnalytics(crops.crops.filter(crop => targetCrops.includes(crop._id)));
+      let chartLabels = [];
+
+      cropAnlytics.forEach(crop => {
+        crop.statistics.forEach(stat => {
+          const dateStr = `${String(stat.month).padStart(2, '0')}/01/${stat.year}`;
+          chartLabels.push(dateStr);
+        });
+      });
+
+      chartLabels = [...new Set(chartLabels)].sort();
+
+      if (chartLabels.length > 0) {
+        setChartDates(chartLabels);
+      }
+
     }
 
   }, [users, crops]);
-
-
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/login', { replace: true });
-    }
-  }, [user, navigate]);
 
 
   return (
@@ -114,59 +139,49 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardStat1 === 0 ? '---' : cardTitle(1, user.user.type)} total={cardStat1} icon={cardIconStyle(1, user.user.type)} />
+            <AppWidgetSummary title={cardStat1 === 0 ? '---' : cardTitle(1, userType)} total={cardStat1} icon={cardIconStyle(1, userType)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardStat2 === 0 ? '---' : cardTitle(2, user.user.type)} total={cardStat2} color="info" icon={cardIconStyle(2, user.user.type)} />
+            <AppWidgetSummary title={cardStat2 === 0 ? '---' : cardTitle(2, userType)} total={cardStat2} color="info" icon={cardIconStyle(2, userType)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardStat3 === 0 ? '---' : cardTitle(3, user.user.type)} total={cardStat3} color="success" icon={cardIconStyle(3, user.user.type)} />
+            <AppWidgetSummary title={cardStat3 === 0 ? '---' : cardTitle(3, userType)} total={cardStat3} color="success" icon={cardIconStyle(3, userType)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardStat4 === 0 ? '---' : cardTitle(4, user.user.type)} total={cardStat4} color="warning" icon={cardIconStyle(4, user.user.type)} />
+            <AppWidgetSummary title={cardStat4 === 0 ? '---' : cardTitle(4, userType)} total={cardStat4} color="warning" icon={cardIconStyle(4, userType)} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits
-              title="Website Visits"
-              subheader="(+43%) than last year"
-              chartLabels={[
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ]}
-              chartData={[
-                {
-                  name: 'Team A',
-                  type: 'column',
-                  fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                },
-                {
-                  name: 'Team B',
-                  type: 'area',
-                  fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-                {
-                  name: 'Team C',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                },
-              ]}
-            />
+            {chartDates.length > 0 && (
+              <AppWebsiteVisits
+                title="Demand Analytics"
+                subheader={`From ${chartDates[0]} to ${chartDates[chartDates.length - 1]}`}
+                chartLabels={chartDates}
+                chartData={[
+                  {
+                    name: cropAnlytics.length > 0 ? cropAnlytics[0].name : '---',
+                    type: 'column',
+                    fill: 'solid',
+                    data: [23, 11, 22, 27],
+                  },
+                  {
+                    name: cropAnlytics.length > 0 ? cropAnlytics[1].name : '---',
+                    type: 'area',
+                    fill: 'gradient',
+                    data: [44, 55, 41, 67],
+                  },
+                  {
+                    name: cropAnlytics.length > 0 ? cropAnlytics[2].name : '---',
+                    type: 'line',
+                    fill: 'solid',
+                    data: [30, 25, 36, 30],
+                  },
+                ]}
+              />
+            )}
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>

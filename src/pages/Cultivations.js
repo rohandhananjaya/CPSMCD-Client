@@ -54,9 +54,6 @@ export default function CultivationsPage() {
 
 
   useEffect(() => {
-    console.log('Cult Updating');
-    console.log(users.users);
-    console.log('----------');
     if (users.users.length > 0) {
       const userCultivation = users.users.filter(thisUser => thisUser._id === user._id)[0].cultivation;
       setCrops(userCultivation);

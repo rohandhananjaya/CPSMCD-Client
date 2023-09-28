@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect,useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
@@ -39,8 +40,20 @@ Nav.propTypes = {
 export default function Nav({ openNav, onCloseNav }) {
   const user = useSelector((state) => state.auth);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [userName,setUserName] = useState('--');
+  const [userEmail,setUserEmail] = useState('--');
 
   const isDesktop = useResponsive('up', 'lg');
+
+  useEffect(() => {
+    if (user.user === null) {
+      navigate('/login', { replace: true });
+    } else {
+      setUserName(user.user.name);
+      setUserEmail(user.user.email);
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     if (openNav) {
@@ -67,11 +80,11 @@ export default function Nav({ openNav, onCloseNav }) {
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {user.user.name}
+                {userName}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {user.user.type}
+                {userEmail}
               </Typography>
             </Box>
           </StyledAccount>
