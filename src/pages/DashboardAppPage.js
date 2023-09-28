@@ -187,19 +187,19 @@ export default function DashboardAppPage() {
                 chartData={[
                   {
                     name: cropAnlytics.length > 0 ? cropAnlytics[0].name : '---',
-                    type: 'column',
+                    type: 'line',
                     fill: 'solid',
                     data: cropDemand[0],
                   },
                   {
                     name: cropAnlytics.length > 0 ? cropAnlytics[1].name : '---',
-                    type: 'column',
+                    type: 'line',
                     fill: 'solid',
                     data: cropDemand[1],
                   },
                   {
                     name: cropAnlytics.length > 0 ? cropAnlytics[2].name : '---',
-                    type: 'column',
+                    type: 'line',
                     fill: 'solid',
                     data: cropDemand[2],
                   },
