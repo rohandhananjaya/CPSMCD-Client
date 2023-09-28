@@ -44,7 +44,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:apple-filled';
                 break;
             case 'Officer':
-                icon = 'ant-design:schedule-filled';
+                icon = 'ant-design:account-book-outlined';
                 break;
             case 'Seller':
                 icon = 'ant-design:user-outlined';
@@ -61,7 +61,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:apple-filled';
                 break;
             case 'Officer':
-                icon = 'ant-design:history-outlined';
+                icon = 'ant-design:code-sandbox-outlined';
                 break;
             case 'Seller':
                 icon = 'ant-design:user-outlined';
@@ -85,7 +85,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Total Orders';
                 break;
             case 'Officer':
-                title = 'Total Farmers';
+                title = 'Farmers';
                 break;
             case 'Seller':
                 title = 'Total Users';
@@ -119,7 +119,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Total Orders';
                 break;
             case 'Officer':
-                title = 'Completed';
+                title = 'Buyers';
                 break;
             case 'Seller':
                 title = 'Total Orders';
@@ -136,7 +136,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Total Orders';
                 break;
             case 'Officer':
-                title = 'Processing';
+                title = 'Sellers';
                 break;
             case 'Seller':
                 title = 'Total Orders';
