@@ -45,6 +45,8 @@ export default function DashboardAppPage() {
   const [cropDemand, setCropDemand] = useState([]);
   const [chartDates, setChartDates] = useState([]);
   const [userType, setUserType] = useState('');
+  const [cultivationData, setCultivationData] = useState([]);
+
 
   const targetCrops = ['64fe09929213ed8c3ff22ae3', '65088ae1ef48dd4f1f04e848', '65088b92ef48dd4f1f04e852'];
 
@@ -72,53 +74,52 @@ export default function DashboardAppPage() {
 
 
     if (users.users.length > 0 && crops.crops.length > 0) {
+      const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation || [];
+      const currentUserCultivations = users.users.find(thisUser => thisUser._id === user.user._id)?.cultivation || [];
+      const cropDemandSet = [];
+      const cropStat = [];
+      let chartLabels = [];
+
+
       if (user.user.type === 'Officer') {
         setCardStat1(users.users.filter(user => user.type === 'Farmer').length);
-      }
-      if (user.user.type === 'Farmer') {
-        setCardStat1(crops.crops.length);
-      }
-
-      if (user.user.type === 'Officer') {
         setcardStat2(crops.crops.length);
-      }
-      if (user.user.type === 'Farmer') {
-        setcardStat2(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation.length);
-        console.log(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation);
+        setcardStat3(0);
+        setcardStat4(0);
       }
 
-      if (user.user.type === 'Officer') {
-        setcardStat3(0);
-      }
+
       if (user.user.type === 'Farmer') {
-        const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
+
+        setCardStat1(crops.crops.length);
+        setcardStat2(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation.length);
+        
+        const transformedCultivationData = currentUserCultivations.map(cultivation => ({
+          label: cultivation.name,
+          value: cultivation.quantity
+        }));
+
+        setCultivationData(transformedCultivationData);
+
+        
         if (cultivations.length > 0) {
           setcardStat3(cultivations.filter(c => c.status === 'Ready').length);
         }
-      }
 
-      if (user.user.type === 'Officer') {
-        setcardStat4(0);
-      }
-      if (user.user.type === 'Farmer') {
-        const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
         if (cultivations.length > 0) {
           setcardStat4(cultivations.filter(c => c.status === 'Progress').length);
         }
       }
 
+
       setCropAnalytics(crops.crops.filter(crop => targetCrops.includes(crop._id)));
-      let chartLabels = [];
-      const cropDemandSet = [];
-      
+
 
       cropAnlytics.forEach(crop => {
         crop.statistics.forEach(stat => {
           const dateStr = `${String(stat.month).padStart(2, '0')}/01/${stat.year}`;
           chartLabels.push(dateStr);
         });
-        
-        const cropStat =[];
 
         crop.statistics.forEach(stat => {
           cropStat.push(stat.quantity);
@@ -126,7 +127,7 @@ export default function DashboardAppPage() {
         cropDemandSet.push(cropStat);
       });
 
-       setCropDemand(cropDemandSet);
+      setCropDemand(cropDemandSet);
 
       chartLabels = [...new Set(chartLabels)].sort();
 
@@ -168,7 +169,7 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
-            {(chartDates.length > 0 && cropDemand.length >0) && (
+            {(chartDates.length > 0 && cropDemand.length > 0) && (
               <AppWebsiteVisits
                 title="Demand Analytics"
                 subheader={`From ${chartDates[0]} to ${chartDates[chartDates.length - 1]}`}
@@ -200,13 +201,7 @@ export default function DashboardAppPage() {
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits
               title="My Cultivations"
-              chartData={[
-                { label: 'Onions', value: 4344 },
-                { label: 'Potatoes', value: 5435 },
-                { label: 'Tomatoes', value: 1443 },
-                { label: 'Potatoses', value: 5435 },
-                { label: 'Tomatosdes', value: 1443 },
-              ]}
+              chartData={cultivationData}
             />
           </Grid>
 
