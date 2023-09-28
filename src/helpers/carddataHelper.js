@@ -21,7 +21,7 @@ export const cardIconStyle = (card, userType) => {
     } else if (card === 2) {
         switch (userType) {
             case 'Farmer':
-                icon = 'ant-design:apple-filled';
+                icon = 'ant-design:home-outlined';
                 break;
             case 'Buyer':
                 icon = 'ant-design:apple-filled';
@@ -38,7 +38,7 @@ export const cardIconStyle = (card, userType) => {
     } else if (card === 3) {
         switch (userType) {
             case 'Farmer':
-                icon = 'ant-design:apple-filled';
+                icon = 'ant-design:check-circle-outlined';
                 break;
             case 'Buyer':
                 icon = 'ant-design:apple-filled';
@@ -55,7 +55,7 @@ export const cardIconStyle = (card, userType) => {
     } else if (card === 4) {
         switch (userType) {
             case 'Farmer':
-                icon = 'ant-design:apple-filled';
+                icon = 'ant-design:clock-circle-outlined';
                 break;
             case 'Buyer':
                 icon = 'ant-design:apple-filled';
@@ -96,7 +96,7 @@ export const cardTitle = (card, userType) => {
     } else if (card === 2) {
         switch (userType) {
             case 'Farmer':
-                title = 'My Crops';
+                title = 'My Cultivations';
                 break;
             case 'Buyer':
                 title = 'Total Orders';
@@ -113,7 +113,7 @@ export const cardTitle = (card, userType) => {
     } else if (card === 3) {
         switch (userType) {
             case 'Farmer':
-                title = 'Total Orders';
+                title = 'Ready to sell';
                 break;
             case 'Buyer':
                 title = 'Total Orders';
@@ -130,7 +130,7 @@ export const cardTitle = (card, userType) => {
     } else if (card === 4) {
         switch (userType) {
             case 'Farmer':
-                title = 'Total Orders';
+                title = 'In Progress';
                 break;
             case 'Buyer':
                 title = 'Total Orders';

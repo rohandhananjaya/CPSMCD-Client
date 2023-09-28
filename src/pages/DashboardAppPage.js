@@ -1,9 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
-import { useEffect, useState  } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-	
+
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography, Select, Switch } from '@mui/material';
@@ -21,10 +21,10 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
-import { getCrops} from '../features/crops/cropSlice';
+import { getCrops } from '../features/crops/cropSlice';
 import { getUsers } from '../features/users/usersSlice';
 import Iconify from '../components/iconify';
-import {cardIconStyle, cardTitle} from '../helpers/carddataHelper';
+import { cardIconStyle, cardTitle } from '../helpers/carddataHelper';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
@@ -35,16 +35,56 @@ export default function DashboardAppPage() {
   const crops = useSelector((state) => state.crops);
   const users = useSelector((state) => state.users);
 
+  const [cardStat1, setCardStat1] = useState(0);
+  const [cardStat2, setcardStat2] = useState(0);
+  const [cardStat3, setcardStat3] = useState(0);
+  const [cardStat4, setcardStat4] = useState(0);
 
   const dispatch = useDispatch();
 
-useEffect(() => {
+  useEffect(() => {
     dispatch(getUsers());
-}, [dispatch]);
-
-useEffect(() => {
     dispatch(getCrops());
-}, [dispatch]);
+
+    if (user.user.type === 'Officer') {
+      setCardStat1(users.users.filter(user => user.type === 'Farmer').length);
+    }
+    if (user.user.type === 'Farmer') {
+      setCardStat1(crops.crops.length);
+    }
+
+    if (user.user.type === 'Officer') {
+      setcardStat2(crops.crops.length);
+    }
+    if (user.user.type === 'Farmer') {
+      setcardStat2(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation.length);
+    }
+
+    if (user.user.type === 'Officer') {
+      setcardStat3(0);
+    }
+    if (user.user.type === 'Farmer') {
+      // check cultivation is length > 0 !!!
+      const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
+      if(cultivations.length > 0){
+        setcardStat3(cultivations.filter(c => c.status === 'Ready').length);
+      }
+    }
+
+    if (user.user.type === 'Officer') {
+      setcardStat4(0);
+    }
+    if (user.user.type === 'Farmer') {
+      // check cultivation is length > 0 !!!
+      const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation;
+      if(cultivations.length > 0){
+        setcardStat4(cultivations.filter(c => c.status === 'Progress').length);
+      }
+    }
+
+
+  }, [dispatch]);
+
 
 
   useEffect(() => {
@@ -53,22 +93,6 @@ useEffect(() => {
     }
   }, [user, navigate]);
 
-
-  const total1 = () => {
-    let count = 0;
-    if(user.user.type=== 'Officer'){
-      count = users.users.filter(user => user.type === 'Farmer').length;
-    }
-    return count;
-  }
-
-  const total2 = () => {
-    let count = 0;
-    if(user.user.type=== 'Officer'){
-      count = crops.crops.length;
-    }
-    return count;
-  }
 
   return (
     <>
@@ -83,19 +107,19 @@ useEffect(() => {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardTitle(1,user.user.type)} total={total1()} icon={cardIconStyle(1,user.user.type)} />
+            <AppWidgetSummary title={cardStat1 === 0 ? '---' : cardTitle(1, user.user.type)} total={cardStat1} icon={cardIconStyle(1, user.user.type)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardTitle(2,user.user.type)} total={total2()} color="info" icon={cardIconStyle(2,user.user.type)} />
+            <AppWidgetSummary title={cardStat2 === 0 ? '---' : cardTitle(2, user.user.type)} total={cardStat2} color="info" icon={cardIconStyle(2, user.user.type)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardTitle(3,user.user.type)} total={1723315} color="warning" icon={cardIconStyle(3,user.user.type)} />
+            <AppWidgetSummary title={cardStat3 === 0 ? '---' : cardTitle(3, user.user.type)} total={cardStat3} color="success" icon={cardIconStyle(3, user.user.type)} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title={cardTitle(4,user.user.type)} total={234} color="error" icon={cardIconStyle(4,user.user.type)} />
+            <AppWidgetSummary title={cardStat4 === 0 ? '---' : cardTitle(4, user.user.type)} total={cardStat4} color="warning" icon={cardIconStyle(4, user.user.type)} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
