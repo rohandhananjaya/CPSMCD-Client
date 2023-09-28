@@ -26,6 +26,7 @@ import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 import { getCrops } from '../features/crops/cropSlice';
+import { fCurrency } from '../utils/formatNumber';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Crop Name', alignRight: false },
@@ -68,6 +69,22 @@ export default function CultivationsPage() {
     setOpen(null);
   };
 
+  // Helper function to get the color based on crop status
+  const getColorBasedOnStatus = (crpstate) => {
+
+
+    switch (crpstate) {
+      case 'Pre-Stage':
+        return 'warning';
+      case 'Progress':
+        return 'info';
+      case 'Ready':
+        return 'success';
+      default:
+        return 'info';
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -102,9 +119,9 @@ export default function CultivationsPage() {
                       <TableCell>{crop.name}</TableCell>
                       <TableCell>{crop.quantity}</TableCell>
                       <TableCell>
-                        <Label>{crop.status}</Label>
+                        <Label color={getColorBasedOnStatus(crop.status)}>{crop.status}</Label>
                       </TableCell>
-                      <TableCell>{crop.cost}</TableCell>
+                      <TableCell>{fCurrency(crop.cost)}</TableCell>
                       <TableCell>{crop.target_date || 'N/A'}</TableCell>
                       <TableCell>{crop.bid_price}</TableCell>
                       <TableCell align="right">

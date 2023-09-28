@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography, Select, Switch } from '@mui/material';
+import { set } from 'lodash';
 // components
 
 // sections
@@ -25,6 +26,7 @@ import { getCrops } from '../features/crops/cropSlice';
 import { getUsers } from '../features/users/usersSlice';
 import Iconify from '../components/iconify';
 import { cardIconStyle, cardTitle } from '../helpers/carddataHelper';
+
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
@@ -40,8 +42,8 @@ export default function DashboardAppPage() {
   const [cardStat3, setcardStat3] = useState(0);
   const [cardStat4, setcardStat4] = useState(0);
   const [cropAnlytics, setCropAnalytics] = useState([]);
+  const [cropDemand, setCropDemand] = useState([]);
   const [chartDates, setChartDates] = useState([]);
-  const [chartData, setChartData] = useState([]);
   const [userType, setUserType] = useState('');
 
   const targetCrops = ['64fe09929213ed8c3ff22ae3', '65088ae1ef48dd4f1f04e848', '65088b92ef48dd4f1f04e852'];
@@ -68,7 +70,6 @@ export default function DashboardAppPage() {
 
   useEffect(() => {
 
-    //  console.log(crops.crops)
 
     if (users.users.length > 0 && crops.crops.length > 0) {
       if (user.user.type === 'Officer') {
@@ -83,6 +84,7 @@ export default function DashboardAppPage() {
       }
       if (user.user.type === 'Farmer') {
         setcardStat2(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation.length);
+        console.log(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation);
       }
 
       if (user.user.type === 'Officer') {
@@ -107,13 +109,24 @@ export default function DashboardAppPage() {
 
       setCropAnalytics(crops.crops.filter(crop => targetCrops.includes(crop._id)));
       let chartLabels = [];
+      const cropDemandSet = [];
+      
 
       cropAnlytics.forEach(crop => {
         crop.statistics.forEach(stat => {
           const dateStr = `${String(stat.month).padStart(2, '0')}/01/${stat.year}`;
           chartLabels.push(dateStr);
         });
+        
+        const cropStat =[];
+
+        crop.statistics.forEach(stat => {
+          cropStat.push(stat.quantity);
+        });
+        cropDemandSet.push(cropStat);
       });
+
+       setCropDemand(cropDemandSet);
 
       chartLabels = [...new Set(chartLabels)].sort();
 
@@ -155,7 +168,7 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
-            {chartDates.length > 0 && (
+            {(chartDates.length > 0 && cropDemand.length >0) && (
               <AppWebsiteVisits
                 title="Demand Analytics"
                 subheader={`From ${chartDates[0]} to ${chartDates[chartDates.length - 1]}`}
@@ -165,19 +178,19 @@ export default function DashboardAppPage() {
                     name: cropAnlytics.length > 0 ? cropAnlytics[0].name : '---',
                     type: 'column',
                     fill: 'solid',
-                    data: [23, 11, 22, 27],
+                    data: cropDemand[0],
                   },
                   {
                     name: cropAnlytics.length > 0 ? cropAnlytics[1].name : '---',
-                    type: 'area',
-                    fill: 'gradient',
-                    data: [44, 55, 41, 67],
+                    type: 'column',
+                    fill: 'solid',
+                    data: cropDemand[1],
                   },
                   {
                     name: cropAnlytics.length > 0 ? cropAnlytics[2].name : '---',
-                    type: 'line',
+                    type: 'column',
                     fill: 'solid',
-                    data: [30, 25, 36, 30],
+                    data: cropDemand[2],
                   },
                 ]}
               />
@@ -186,18 +199,13 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits
-              title="Current Visits"
+              title="My Cultivations"
               chartData={[
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
-              ]}
-              chartColors={[
-                theme.palette.primary.main,
-                theme.palette.info.main,
-                theme.palette.warning.main,
-                theme.palette.error.main,
+                { label: 'Onions', value: 4344 },
+                { label: 'Potatoes', value: 5435 },
+                { label: 'Tomatoes', value: 1443 },
+                { label: 'Potatoses', value: 5435 },
+                { label: 'Tomatosdes', value: 1443 },
               ]}
             />
           </Grid>

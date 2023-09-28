@@ -12,7 +12,7 @@ import { updateUser, getUsers } from '../features/users/usersSlice';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import { createCrop, getCrops, updateCrop } from '../features/crops/cropSlice';
-
+import { fCurrency } from '../utils/formatNumber';
 
 const initialCropData = {
     name: '',
@@ -311,7 +311,7 @@ export default function CropAdd() {
                             {Array.isArray(crops.crops) && crops.crops.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((crop) => (
                                 <TableRow hover key={crop._id} tabIndex={-1}>
                                     <TableCell>{crop.name}</TableCell>
-                                    <TableCell>{crop.costOfSeed}</TableCell>
+                                    <TableCell>{fCurrency(crop.costOfSeed)}</TableCell>
                                     <TableCell>{crop.timeToGrow}</TableCell>
                                     <TableCell>{crop.statistics.length > 0 ? `${crop.statistics[crop.statistics.length - 1].quantity} Kg` : 'N/A'}</TableCell>
                                     <TableCell>
