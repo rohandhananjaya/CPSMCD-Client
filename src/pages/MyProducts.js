@@ -59,15 +59,16 @@ export default function MyProductsPage() {
             </Helmet>
 
             <Container>
-                <Typography variant="h4" sx={{ mb: 5 }}>
-                    My Products
-                </Typography>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+                    <Typography variant="h4" sx={{ mb: 5 }}>
+                        My Products
+                    </Typography>
 
-                {/* Button to open the dialog */}
-                <Button variant="contained" color="primary" onClick={handleOpenDialog}>
-                    Add New Product
-                </Button>
-
+                    {/* Button to open the dialog */}
+                    <Button variant="contained" color="primary" onClick={handleOpenDialog}>
+                        Add New Product
+                    </Button>
+                </Stack>
                 {/* Dialog for New Product Form */}
                 <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
                     <DialogTitle>Add New Product</DialogTitle>

@@ -47,6 +47,7 @@ export default function CropAdd() {
     const [chartData, setChartData] = useState([]);
     const [selStatic, setselStatic] = useState([]);
     const users = useSelector((state) => state.users);
+    const [formDialogOpen, setFormDialogOpen] = useState(false);
 
 
     const [menuData, setMenuData] = useState({
@@ -99,6 +100,7 @@ export default function CropAdd() {
             await dispatch(createCrop(cropData));
             setCropData(initialCropData);
             dispatch(getCrops());
+            handleCloseFormDialog();  
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -240,18 +242,31 @@ export default function CropAdd() {
         return 'N/A';
     }
 
+    const handleOpenFormDialog = () => {
+        setFormDialogOpen(true);
+    };
+
+    const handleCloseFormDialog = () => {
+        setFormDialogOpen(false);
+    };
+
+
     return (
         <Container maxWidth="lg">
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-          Crop Manager
-          </Typography>
-        </Stack>
-            {user.user.type === "Officer" && (
-                <Paper elevation={3} sx={{ padding: 3 }}>
-                    <Typography variant="h5" gutterBottom>
-                        Add New Crop to list
-                    </Typography>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+                <Typography variant="h4" gutterBottom>
+                    Crop Manager
+                </Typography>
+                {user.user.type === "Officer" && (
+                <Button variant="contained" color="primary" onClick={handleOpenFormDialog}>
+                    Add New Crop
+                </Button>
+                )}
+            </Stack>
+            
+            <Dialog open={formDialogOpen} onClose={handleCloseFormDialog} fullWidth maxWidth="md">
+                <DialogTitle>Add Crop Details</DialogTitle>
+                <DialogContent>
                     <form>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -282,16 +297,17 @@ export default function CropAdd() {
                                 />
                             </Grid>
                         </Grid>
-                        {isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Button variant="contained" color="primary" onClick={handleAddCrop} sx={{ mt: 2 }}>
-                                Add Crop
-                            </Button>
-                        )}
                     </form>
-                </Paper>
-            )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseFormDialog} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleAddCrop} color="primary">
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Card sx={{ padding: 3, mt: 2 }}>
                 <Typography variant="h6" gutterBottom>
                     List of Crops
