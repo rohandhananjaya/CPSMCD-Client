@@ -121,12 +121,27 @@ export default function DashboardAppPage() {
         setcardStat4(4);
         setCultivationData(sellerStat);
       } else if (user.user.type === 'Buyer') {
-        setCardStat1(9);
-        setPieChartTitle('Stocks status');
-        setcardStat2(9);
-        setcardStat3(1403);
-        setcardStat4(4);
-        setCultivationData(sellerStat);
+
+        const readyCount = users.users.filter(thisUser => thisUser.type === "Farmer").reduce((acc, curr) => {
+          return acc + curr.cultivation.filter(crop => crop.status === "Ready").length;
+      }, 0);
+        
+        setCardStat1(crops.crops.length);
+        setPieChartTitle('Overall Crop Targets');
+        setcardStat2(users.users.filter(thisUser => thisUser.type === "Farmer").length);
+        setcardStat3(readyCount);
+        setcardStat4(0);
+        
+        if (crops.crops.length > 0) {
+          setCultivationData(
+            crops.crops
+              .filter(crop => crop.statistics && crop.statistics.length > 0)
+              .map(crop => ({
+                label: crop.name,
+                value: crop.statistics[crop.statistics.length - 1].quantity
+              })));
+          setcardStat2(crops.crops.length);
+        }
       }
 
 

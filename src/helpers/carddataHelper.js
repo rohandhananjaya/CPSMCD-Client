@@ -3,10 +3,10 @@ export const cardIconStyle = (card, userType) => {
     if (card === 1) {
         switch (userType) {
             case 'Farmer':
-                icon = 'ant-design:team-outlined';
+                icon = 'ant-design:gold-outlined';
                 break;
             case 'Buyer':
-                icon = 'ant-design:apple-filled';
+                icon = 'ant-design:gold-outlined';
                 break;
             case 'Officer':
                 icon = 'ant-design:team-outlined';
@@ -24,7 +24,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:home-outlined';
                 break;
             case 'Buyer':
-                icon = 'ant-design:apple-filled';
+                icon = 'ant-design:team-outlined';
                 break;
             case 'Officer':
                 icon = 'ant-design:reconciliation-outlined';
@@ -41,7 +41,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:check-circle-outlined';
                 break;
             case 'Buyer':
-                icon = 'ant-design:apple-filled';
+                icon = 'ant-design:check-circle-filled';
                 break;
             case 'Officer':
                 icon = 'ant-design:account-book-outlined';
@@ -58,7 +58,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:clock-circle-outlined';
                 break;
             case 'Buyer':
-                icon = 'ant-design:apple-filled';
+                icon = 'ant-design:tag-filled';
                 break;
             case 'Officer':
                 icon = 'ant-design:code-sandbox-outlined';
@@ -98,7 +98,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Total Crops';
                 break;
             case 'Buyer':
-                title = 'Total Orders';
+                title = 'Total Crops';
                 break;
             case 'Officer':
                 title = 'Farmers';
@@ -115,7 +115,7 @@ export const cardTitle = (card, userType) => {
                 title = 'My Cultivations';
                 break;
             case 'Buyer':
-                title = 'Total Orders';
+                title = 'Total farmers';
                 break;
             case 'Officer':
                 title = 'Total Crops';
@@ -132,7 +132,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Ready to sell';
                 break;
             case 'Buyer':
-                title = 'Total Orders';
+                title = 'Ready to sell';
                 break;
             case 'Officer':
                 title = 'Buyers';
@@ -149,7 +149,7 @@ export const cardTitle = (card, userType) => {
                 title = 'In Progress';
                 break;
             case 'Buyer':
-                title = 'Total Orders';
+                title = 'Bids Placed';
                 break;
             case 'Officer':
                 title = 'Sellers';
