@@ -24,7 +24,7 @@ import {
 import { getCrops } from '../features/crops/cropSlice';
 import { getUsers } from '../features/users/usersSlice';
 import Iconify from '../components/iconify';
-import { cardIconStyle, cardTitle } from '../helpers/carddataHelper';
+import { cardIconStyle, cardTitle, sellerStat } from '../helpers/carddataHelper';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
@@ -120,11 +120,11 @@ export default function DashboardAppPage() {
 
       if (user.user.type === 'Seller') {
         setCardStat1(9);
-        setPieChartTitle('Overall Crop Targets');
+        setPieChartTitle('Stocks status');
         setcardStat2(9);
         setcardStat3(1403);
         setcardStat4(4);
-        
+        setCultivationData(sellerStat);
       }
         
 
@@ -185,7 +185,7 @@ export default function DashboardAppPage() {
           <Grid item xs={12} md={6} lg={8}>
             {(chartDates.length > 0 && cropDemand.length > 0) && (
               <AppWebsiteVisits
-                title="Demand Analytics"
+                title="Crop Demand Analytics"
                 subheader={`From ${chartDates[0]} to ${chartDates[chartDates.length - 1]}`}
                 chartLabels={chartDates}
                 chartData={[

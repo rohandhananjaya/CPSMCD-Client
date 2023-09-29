@@ -25,10 +25,16 @@ const navConfig = [
     user: ['Farmer'	,'Buyer'],
   },
   {
-    title: 'Shop',
+    title: 'Marketplace',
     path: '/dashboard/products',
     icon: icon('ic_cart'),
     user: ['Farmer','Seller'],
+  },
+  {
+    title: 'My Products',
+    path: '/dashboard/my-products',
+    icon: icon('ic_shop'),
+    user: ['Seller'],
   },
   {
     title: 'Help',

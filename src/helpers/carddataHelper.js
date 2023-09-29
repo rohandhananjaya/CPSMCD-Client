@@ -12,7 +12,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:team-outlined';
                 break;
             case 'Seller':
-                icon = 'ant-design:user-outlined';
+                icon = 'ant-design:code-sandbox-outlined';
                 break;
             default:
                 icon = 'ant-design:warning-filled';
@@ -73,6 +73,22 @@ export const cardIconStyle = (card, userType) => {
 
     return icon;
 };
+
+export const sellerStat = () => {
+    const stat =
+        [
+            { label: 'Crocodile Mammoty', value: 15 },
+            { label: 'Rigid Type Tractor Cultivators', value: 10 },
+            { label: 'Buy Singer Agro Pump', value: 12 },
+            { label: 'Garden Sprayers', value: 20 },
+            { label: 'Santilizer Spray Bottle', value: 50 },
+            { label: 'Cinemon Cutting Knife', value: 40 },
+            { label: 'Garden Tool Set 3PCS', value: 35 },
+            { label: 'Garden Fork & Hand Trowel', value: 20 },
+            { label: 'Stanley Straight Rake', value: 10 },
+        ];
+    return stat;
+}
 
 export const cardTitle = (card, userType) => {
     let title = 'N/A';
@@ -148,3 +164,5 @@ export const cardTitle = (card, userType) => {
 
     return title;
 };
+
+

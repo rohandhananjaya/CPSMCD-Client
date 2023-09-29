@@ -8,6 +8,7 @@ import CultivationsPage from './pages/Cultivations';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
+import MyProductsPage from './pages/MyProducts';
 import DashboardAppPage from './pages/DashboardAppPage';
 import CropAdd from './pages/Crops';
 
@@ -23,6 +24,7 @@ export default function Router() {
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'cultivations', element: <CultivationsPage /> },
         { path: 'products', element: <ProductsPage /> },
+        { path: 'my-products', element: <MyProductsPage /> },
         { path: 'help', element: <BlogPage /> },
         { path: 'crop-manager', element: <CropAdd /> }
       ],
