@@ -151,7 +151,7 @@ export default function CropAdd() {
                 quantity: menuData.target,
                 min_price: menuData.minPrice,
                 max_price: menuData.maxPrice,
-                cropstatus: "Progress",
+                cropstatus: "Pre-Stage",
             }];
 
             const bindData = {

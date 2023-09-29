@@ -34,6 +34,7 @@ export default function AccountPopover() {
   const { user } = useSelector((state) => state.auth);
   const [userName,setUserName] = useState('--');
   const [userEmail,setUserEmail] = useState('--');
+  const [photoURL,setPhotoURL] = useState('');
 
 
   const [open, setOpen] = useState(null);
@@ -56,6 +57,7 @@ export default function AccountPopover() {
     if(user){
       setUserName(user.name);
       setUserEmail(user.email);
+      setPhotoURL(user.profile_pic);
     }
   },[dispatch]);
 
@@ -78,7 +80,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={account.photoURL + photoURL} alt="photoURL" />
       </IconButton>
 
       <Popover

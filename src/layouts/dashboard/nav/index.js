@@ -43,7 +43,7 @@ export default function Nav({ openNav, onCloseNav }) {
   const navigate = useNavigate();
   const [userName,setUserName] = useState('--');
   const [userType,setUserType] = useState('--');
-
+  const [photoURL,setPhotoURL] = useState('');
   const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
@@ -52,6 +52,7 @@ export default function Nav({ openNav, onCloseNav }) {
     } else {
       setUserName(user.user.name);
       setUserType(user.user.type);
+      setPhotoURL(user.user.profile_pic);
     }
   }, [user, navigate]);
 
@@ -76,7 +77,7 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={account.photoURL + photoURL} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
