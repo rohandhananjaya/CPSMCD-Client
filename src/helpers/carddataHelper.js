@@ -30,7 +30,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:reconciliation-outlined';
                 break;
             case 'Seller':
-                icon = 'ant-design:user-outlined';
+                icon = 'ant-design:shop-filled';
                 break;
             default:
                 icon = 'ant-design:warning-filled';
@@ -47,7 +47,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:account-book-outlined';
                 break;
             case 'Seller':
-                icon = 'ant-design:user-outlined';
+                icon = 'ant-design:tag-filled';
                 break;
             default:
                 icon = 'ant-design:warning-filled';
@@ -64,7 +64,7 @@ export const cardIconStyle = (card, userType) => {
                 icon = 'ant-design:code-sandbox-outlined';
                 break;
             case 'Seller':
-                icon = 'ant-design:user-outlined';
+                icon = 'ant-design:warning-outlined';
                 break;
             default:
                 icon = 'ant-design:warning-filled';
@@ -88,7 +88,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Farmers';
                 break;
             case 'Seller':
-                title = 'Total Users';
+                title = 'Total Products';
                 break;
             default:
                 title = 'N/A';
@@ -105,7 +105,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Total Crops';
                 break;
             case 'Seller':
-                title = 'Total Users';
+                title = 'My Shop';
                 break;
             default:
                 title = 'N/A';
@@ -122,7 +122,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Buyers';
                 break;
             case 'Seller':
-                title = 'Total Orders';
+                title = 'Items Sold';
                 break;
             default:
                 title = 'N/A';
@@ -139,7 +139,7 @@ export const cardTitle = (card, userType) => {
                 title = 'Sellers';
                 break;
             case 'Seller':
-                title = 'Total Orders';
+                title = 'Low Stock';
                 break;
             default:
                 title = 'N/A';

@@ -42,7 +42,7 @@ export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [userName,setUserName] = useState('--');
-  const [userEmail,setUserEmail] = useState('--');
+  const [userType,setUserType] = useState('--');
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -51,7 +51,7 @@ export default function Nav({ openNav, onCloseNav }) {
       navigate('/login', { replace: true });
     } else {
       setUserName(user.user.name);
-      setUserEmail(user.user.email);
+      setUserType(user.user.type);
     }
   }, [user, navigate]);
 
@@ -84,7 +84,7 @@ export default function Nav({ openNav, onCloseNav }) {
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {userEmail}
+                {userType}
               </Typography>
             </Box>
           </StyledAccount>

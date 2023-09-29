@@ -1,5 +1,4 @@
 import { Helmet } from 'react-helmet-async';
-import { faker } from '@faker-js/faker';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -26,7 +25,6 @@ import { getCrops } from '../features/crops/cropSlice';
 import { getUsers } from '../features/users/usersSlice';
 import Iconify from '../components/iconify';
 import { cardIconStyle, cardTitle } from '../helpers/carddataHelper';
-
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
@@ -75,11 +73,7 @@ export default function DashboardAppPage() {
 
 
     if (users.users.length > 0 && crops.crops.length > 0) {
-      const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation || [];
-      const currentUserCultivations = users.users.find(thisUser => thisUser._id === user.user._id)?.cultivation || [];
-      const cropDemandSet = [];
-      
-
+     // const cropDemandSet = [];
 
       if (user.user.type === 'Officer') {
         setCardStat1(users.users.filter(user => user.type === 'Farmer').length);
@@ -101,7 +95,8 @@ export default function DashboardAppPage() {
 
 
       if (user.user.type === 'Farmer') {
-
+        const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation || [];
+        const currentUserCultivations = users.users.find(thisUser => thisUser._id === user.user._id)?.cultivation || [];
         setCardStat1(crops.crops.length);
         setPieChartTitle('My Cultivations');
         setcardStat2(users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation.length);
@@ -123,6 +118,15 @@ export default function DashboardAppPage() {
         }
       }
 
+      if (user.user.type === 'Seller') {
+        setCardStat1(9);
+        setPieChartTitle('Overall Crop Targets');
+        setcardStat2(9);
+        setcardStat3(1403);
+        setcardStat4(4);
+        
+      }
+        
 
       setCropAnalytics(crops.crops.filter(crop => targetCrops.includes(crop._id)));
       let cropStat = [];
