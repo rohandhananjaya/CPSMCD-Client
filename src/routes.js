@@ -11,7 +11,7 @@ import ProductsPage from './pages/ProductsPage';
 import MyProductsPage from './pages/MyProducts';
 import DashboardAppPage from './pages/DashboardAppPage';
 import CropAdd from './pages/Crops';
-
+import Auction from './pages/Auction';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -26,7 +26,8 @@ export default function Router() {
         { path: 'products', element: <ProductsPage /> },
         { path: 'my-products', element: <MyProductsPage /> },
         { path: 'help', element: <BlogPage /> },
-        { path: 'crop-manager', element: <CropAdd /> }
+        { path: 'crop-manager', element: <CropAdd /> },
+        { path: 'auction', element: <Auction /> }
       ],
     },
     {

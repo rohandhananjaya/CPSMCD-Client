@@ -73,7 +73,7 @@ export default function DashboardAppPage() {
 
 
     if (users.users.length > 0 && crops.crops.length > 0) {
-     // const cropDemandSet = [];
+      // const cropDemandSet = [];
 
       if (user.user.type === 'Officer') {
         setCardStat1(users.users.filter(user => user.type === 'Farmer').length);
@@ -86,15 +86,12 @@ export default function DashboardAppPage() {
                 label: crop.name,
                 value: crop.statistics[crop.statistics.length - 1].quantity
               })));
-              setcardStat2(crops.crops.length);
+          setcardStat2(crops.crops.length);
         }
-        
+
         setcardStat3(users.users.filter(user => user.type === 'Buyer').length);
         setcardStat4(users.users.filter(user => user.type === 'Seller').length);
-      }
-
-
-      if (user.user.type === 'Farmer') {
+      } else if (user.user.type === 'Farmer') {
         const cultivations = users.users.filter(thisUser => thisUser._id === user.user._id)[0].cultivation || [];
         const currentUserCultivations = users.users.find(thisUser => thisUser._id === user.user._id)?.cultivation || [];
         setCardStat1(crops.crops.length);
@@ -116,9 +113,14 @@ export default function DashboardAppPage() {
         if (cultivations.length > 0) {
           setcardStat4(cultivations.filter(c => c.status === 'Progress').length);
         }
-      }
-
-      if (user.user.type === 'Seller') {
+      } else if (user.user.type === 'Seller') {
+        setCardStat1(9);
+        setPieChartTitle('Stocks status');
+        setcardStat2(9);
+        setcardStat3(1403);
+        setcardStat4(4);
+        setCultivationData(sellerStat);
+      } else if (user.user.type === 'Buyer') {
         setCardStat1(9);
         setPieChartTitle('Stocks status');
         setcardStat2(9);
@@ -126,7 +128,7 @@ export default function DashboardAppPage() {
         setcardStat4(4);
         setCultivationData(sellerStat);
       }
-        
+
 
       setCropAnalytics(crops.crops.filter(crop => targetCrops.includes(crop._id)));
       let cropStat = [];

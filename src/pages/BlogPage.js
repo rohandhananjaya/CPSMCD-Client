@@ -30,7 +30,7 @@ export default function BlogPage() {
             Help Center
           </Typography>
           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Post
+            New help request
           </Button>
         </Stack>
 

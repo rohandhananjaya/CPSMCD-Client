@@ -10,25 +10,25 @@ const navConfig = [
     title: 'Dashboard',
     path: '/dashboard/app',
     icon: icon('ic_analytics'),
-    user: ['Officer', 'Farmer'	,'Buyer','Seller'],
+    user: ['Officer', 'Farmer', 'Buyer', 'Seller'],
   },
   {
     title: 'Crop Manager',
     path: '/dashboard/crop-manager',
     icon: icon('ic_crop'),
-    user: ['Officer', 'Farmer' ,'Buyer'],
+    user: ['Officer', 'Farmer'],
   },
   {
     title: 'My Cultivations',
     path: '/dashboard/cultivations',
     icon: icon('ic_user'),
-    user: ['Farmer'	,'Buyer'],
+    user: ['Farmer'],
   },
   {
     title: 'Marketplace',
     path: '/dashboard/products',
     icon: icon('ic_cart'),
-    user: ['Farmer','Seller'],
+    user: ['Farmer', 'Seller'],
   },
   {
     title: 'My Products',
@@ -37,10 +37,16 @@ const navConfig = [
     user: ['Seller'],
   },
   {
+    title: 'Auction',
+    path: '/dashboard/auction',
+    icon: icon('ic_shop'),
+    user: ['Buyer'],
+  },
+  {
     title: 'Help',
     path: '/dashboard/help',
     icon: icon('ic_blog'),
-    user: ['Officer', 'Farmer'	,'Buyer','Seller'],
+    user: ['Officer', 'Farmer', 'Buyer', 'Seller'],
   },
 
 ];
