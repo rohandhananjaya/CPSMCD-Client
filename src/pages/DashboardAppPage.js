@@ -140,7 +140,6 @@ export default function DashboardAppPage() {
                 label: crop.name,
                 value: crop.statistics[crop.statistics.length - 1].quantity
               })));
-          setcardStat2(crops.crops.length);
         }
       }
 
